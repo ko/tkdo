@@ -6,6 +6,7 @@ import (
     "log"
     "strings"
     "bufio"
+    "time"
 )
 
 func scanLines(path string) ([]string, error) {
@@ -35,14 +36,18 @@ func parseEntry(lineno int, line string) (entryLine string) {
 }
 
 func parseDate(lineno int, line string) (date string) {
+
+    const shortForm = "2006-01-02";
     var words = strings.Fields(line)
-    fmt.Println(lineno, " ", words, len(words))
+    var t time.Time
 
     if words[0] == "#" {
         date = strings.Join(words[1:], " ")
-    }
+        t = dateToTime(date)
 
-    return date
+
+    }
+    return t.Format(shortForm)
 }
 
 func parseYaml(lineno int, line string) (key string, value string) {
@@ -106,11 +111,36 @@ func parseFile(path string) (header map[string]string, body map[string]string) {
     return mapHdr, mapBody
 }
 
-func summarize(from string, to string) (summary string) {
+func dateToTime(date string) (parsed time.Time) {
+    const shortForm = "2006-01-02"
 
-    var s string
+    t, err := time.Parse(shortForm, date)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
 
-    return s
+    return t
+}
+
+func summarize(body map[string]string, from string, to string) (summary string) {
+
+    const shortForm = "2006-01-02"
+    var t time.Time
+
+    var year int
+    var month time.Month
+    var day int
+
+    t = dateToTime(from)
+    year, month, day = t.Date()
+
+    // for every day FROM to TO...
+    summary += body[t.Format(shortForm)]
+
+    fmt.Println(year,month,day)
+
+    return summary
 }
 
 func main() {
@@ -120,20 +150,19 @@ func main() {
     var body map[string]string
     header, body = parseFile(filename)
 
-    /*
     fmt.Println(header, len(header))
     fmt.Println(body, len(body))
-    */
 
     var fromDate string
     var toDate string
     fromDate = "2014-01-01"
-    toDate = "2014-03-03"
+    toDate = "2014-01-03"
 
 
     /* do something with the header/body now... */
     var summary string
-    summary = summarize(fromDate, toDate)
+    summary = summarize(body, fromDate, toDate)
 
+    fmt.Println("summary...")
     fmt.Println(summary)
 }
