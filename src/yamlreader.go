@@ -30,15 +30,19 @@ func errorExit(i int) {
     os.Exit(1)
 }
 
-func parseLine(lineno int, line string, words []string) {
-    words = strings.Fields(line)
+func parseEntry(lineno int, line string) (entryLine string) {
+    return line + "\n"
+}
+
+func parseDate(lineno int, line string) (date string) {
+    var words = strings.Fields(line)
     fmt.Println(lineno, " ", words, len(words))
 
-    if lineno == 0 {
-        if words[0] != "---" {
-            errorExit(lineno)
-        }
+    if words[0] == "#" {
+        date = strings.Join(words[1:], " ")
     }
+
+    return date
 }
 
 func parseYaml(lineno int, line string) (key string, value string) {
@@ -53,26 +57,23 @@ func parseYaml(lineno int, line string) (key string, value string) {
     key = words[0]
     value = strings.Join(words[1:], " ")
 
-    fmt.Println("key=",key)
-    fmt.Println("val=",value)
-
     return key, value
 }
 
-func main() {
-    filename := `../test/test1.md`
-    //    ReadString(filename)
-    lines, err := scanLines(filename)
+func parseFile(path string) (header map[string]string, body map[string]string) {
+    lines, err := scanLines(path)
     if err != nil {
         log.Fatalf("scanLines: %s", err)
     }
 
-    //var s scanner.Scanner
-    var words []string
+    mapHdr := make(map[string]string)
+    mapBody := make(map[string]string)
+
     var parsingYaml bool
-    kv := make(map[string]string)
+    var parsingEntry bool
     var k string
     var v string
+    var date string
 
     for i, line := range lines {
         if i == 0 {
@@ -87,9 +88,52 @@ func main() {
                 continue
             }
             k,v = parseYaml(i, line)
-            kv[k] = v
+            mapHdr[k] = v
         }
-        parseLine(i, line, words)
+
+        if len(line) > 0 {
+            if line[0] == '#' {
+                date = parseDate(i, line)
+                parsingEntry = true
+                continue
+            }
+        }
+        if parsingEntry == true {
+            mapBody[date] += parseEntry(i, line)
+        }
     }
-    fmt.Println(kv)
+
+    return mapHdr, mapBody
+}
+
+func summarize(from string, to string) (summary string) {
+
+    var s string
+
+    return s
+}
+
+func main() {
+    filename := `../test/test1.md`
+
+    var header map[string]string
+    var body map[string]string
+    header, body = parseFile(filename)
+
+    /*
+    fmt.Println(header, len(header))
+    fmt.Println(body, len(body))
+    */
+
+    var fromDate string
+    var toDate string
+    fromDate = "2014-01-01"
+    toDate = "2014-03-03"
+
+
+    /* do something with the header/body now... */
+    var summary string
+    summary = summarize(fromDate, toDate)
+
+    fmt.Println(summary)
 }
