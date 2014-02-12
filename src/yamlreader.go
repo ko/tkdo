@@ -126,24 +126,24 @@ func dateToTime(date string) (parsed time.Time) {
 func summarize(body map[string]string, from string, to string) (summary string) {
 
     const shortForm = "2006-01-02"
-    var t time.Time
+    var day time.Time
 
-    var year int
-    var month time.Month
-    var day int
-
-    t = dateToTime(from)
-    year, month, day = t.Date()
+    var timeFrom = dateToTime(from)
+    var timeTo = dateToTime(to)
 
     // for every day FROM to TO...
-    summary += body[t.Format(shortForm)]
+    for day = timeFrom; day != timeTo; day = day.Add(time.Hour * 24) {
+        fmt.Println(day.Format(shortForm))
+        summary += body[day.Format(shortForm)]
+    }
 
-    fmt.Println(year,month,day)
 
     return summary
 }
 
 func main() {
+    const shortForm = "2006-01-02"
+
     filename := `../test/test1.md`
 
     var header map[string]string
@@ -156,7 +156,7 @@ func main() {
     var fromDate string
     var toDate string
     fromDate = "2014-01-01"
-    toDate = "2014-01-03"
+    toDate = time.Now().Format(shortForm)
 
 
     /* do something with the header/body now... */
