@@ -7,6 +7,7 @@ import (
     "strings"
     "bufio"
     "time"
+    "strconv"
 )
 
 func scanLines(path string) ([]string, error) {
@@ -141,21 +142,34 @@ func summarize(body map[string]string, from string, to string) (summary string) 
     return summary
 }
 
+func usage() {
+    fmt.Fprintf(os.Stderr, "Usage: %s [days]\n", os.Args[0])
+    os.Exit(1)
+}
+
 func main() {
     const shortForm = "2006-01-02"
 
     filename := `../test/test1.md`
 
+    if len(os.Args) < 1 {
+        usage()
+    }
+    var days, _ = strconv.Atoi(os.Args[1])
+
     var header map[string]string
     var body map[string]string
     header, body = parseFile(filename)
 
-    fmt.Println(header, len(header))
-    fmt.Println(body, len(body))
+    // debug
+    fmt.Println(header,len(header))
+    fmt.Println(body,len(body))
 
+
+    // time strings
     var fromDate string
     var toDate string
-    fromDate = "2014-01-01"
+    fromDate = time.Now().Add(-(time.Hour * 24 * days)).Format(shortForm)
     toDate = time.Now().Format(shortForm)
 
 
