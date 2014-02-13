@@ -8,25 +8,27 @@ import (
     "bufio"
     "time"
     "flag"
+    "io/ioutil"
 )
 
 
 
-var days int
-var mode string 
+var gDays int
+var gMode string
+var gDir string
 
 const (
     titleMode = "title"
 )
 
 
-type Task struct { 
+type Task struct {
     title string
     category string
     updates map[string]string
 }
 
-func (t Task) GetTaskName() string { 
+func (t Task) GetTaskName() string {
     return t.title
 }
 
@@ -192,13 +194,28 @@ func fileToTask(filename string) (t Task) {
 }
 
 
+func getFileList(dir string) []string {
+
+    var filelist []string
+    files, _ := ioutil.ReadDir(dir)
+    fmt.Println(files)
+    for _, f := range files {
+        fmt.Println(f)
+        fmt.Println(f.Name())
+    }
+
+    return filelist
+}
+
 func init() {
     const (
             defaultDays = 7
             defaultMode = titleMode
+            defaultDir = "."
     )
-    flag.IntVar(&days, "days", defaultDays, "days to look back from now")
-    flag.StringVar(&mode, "mode", defaultMode, "mode to run in")
+    flag.IntVar(&gDays, "days", defaultDays, "days to look back from now")
+    flag.StringVar(&gMode, "mode", defaultMode, "mode to run in")
+    flag.StringVar(&gDir, "dir", defaultDir, "directory with tasks")
 }
 
 func main() {
@@ -207,39 +224,42 @@ func main() {
 
     const shortForm = "2006-01-02"
 
-    filename := `../test/test1.md`
+    //filename := `../test/test1.md`
 
     // time strings
-    var fromDate string
-    var toDate string
     var startTime time.Time
     var endTime time.Time
-    startTime = time.Now().Add(-(time.Hour * 24 * time.Duration(days)))
+    startTime = time.Now().Add(-(time.Hour * 24 * time.Duration(gDays)))
     endTime = time.Now()
-    fromDate = startTime.Format(shortForm)
-    toDate = endTime.Format(shortForm)
+
+
 
 
     // TODO need to loop over multiple files
-    var task Task
-    task = fileToTask(filename)
+    var files = getFileList(gDir)
+    for file := range files {
+        var task Task
+        task = fileToTask(files[file])
 
-    if mode == titleMode {
+        if gMode == titleMode {
 
-        result := []string
+            var result []string
 
-        for k, _ := range task.updates { 
-            if dateToTime(k).Before(endTime) == true {
-                if dateToTime(k).After(startTime) == true {
-                    result = append(result, task.GetTaskName())
+            for k, _ := range task.updates {
+                if dateToTime(k).Before(endTime) == true {
+                    if dateToTime(k).After(startTime) == true {
+                        result = append(result, task.GetTaskName())
+                    }
                 }
             }
+
+            fmt.Println(result)
         }
 
-        fmt.Println(result)
+
     }
 
-    
+
 
 
 
@@ -247,6 +267,11 @@ func main() {
 
 
     /*
+    var fromDate string
+    var toDate string
+    fromDate = startTime.Format(shortForm)
+    toDate = endTime.Format(shortForm)
+
     // do something with the header/body now... 
     var summary string
     summary = summarize(task.updates, fromDate, toDate)
