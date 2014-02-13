@@ -10,6 +10,29 @@ import (
     "flag"
 )
 
+
+
+var days int
+var mode string 
+
+const (
+    titleMode = "title"
+)
+
+
+type Task struct { 
+    title string
+    category string
+    updates map[string]string
+}
+
+func (t Task) GetTaskName() string { 
+    return t.title
+}
+
+
+
+
 func scanLines(path string) ([]string, error) {
 
     file, err := os.Open(path)
@@ -148,13 +171,34 @@ func usage() {
 }
 
 
-var days int
+func fileToTask(filename string) (t Task) {
+
+    const (
+        title = "title"
+        category = "category"
+    )
+
+
+    var header, body map[string]string
+    header, body = parseFile(filename)
+
+    t.title = header[title]
+    t.category = header[category]
+    t.updates = body
+
+    fmt.Println("taskname=", t)
+
+    return t
+}
+
 
 func init() {
     const (
             defaultDays = 7
+            defaultMode = titleMode
     )
     flag.IntVar(&days, "days", defaultDays, "days to look back from now")
+    flag.StringVar(&mode, "mode", defaultMode, "mode to run in")
 }
 
 func main() {
@@ -165,30 +209,46 @@ func main() {
 
     filename := `../test/test1.md`
 
-    if len(os.Args) < 1 {
-        usage()
-    }
-
-    var header map[string]string
-    var body map[string]string
-    header, body = parseFile(filename)
-
-    // debug
-    fmt.Println(header,len(header))
-    fmt.Println(body,len(body))
-
-
     // time strings
     var fromDate string
     var toDate string
-    fromDate = time.Now().Add(-(time.Hour * 24 * time.Duration(days))).Format(shortForm)
-    toDate = time.Now().Format(shortForm)
+    var startTime time.Time
+    var endTime time.Time
+    startTime = time.Now().Add(-(time.Hour * 24 * time.Duration(days)))
+    endTime = time.Now()
+    fromDate = startTime.Format(shortForm)
+    toDate = endTime.Format(shortForm)
 
 
-    /* do something with the header/body now... */
+    // TODO need to loop over multiple files
+    var task Task
+    task = fileToTask(filename)
+
+    if mode == titleMode {
+
+        result := []string
+
+        for k, _ := range task.updates { 
+            if dateToTime(k).Before(endTime) == true {
+                if dateToTime(k).After(startTime) == true {
+                    result = append(result, task.GetTaskName())
+                }
+            }
+        }
+
+        fmt.Println(result)
+    }
+
+    
+
+
+
+
+
+
+    /*
+    // do something with the header/body now... 
     var summary string
-    summary = summarize(body, fromDate, toDate)
-
-    fmt.Println("summary...")
-    fmt.Println(summary)
+    summary = summarize(task.updates, fromDate, toDate)
+    */
 }
