@@ -169,7 +169,7 @@ func main() {
     // time strings
     var fromDate string
     var toDate string
-    fromDate = time.Now().Add(-(time.Hour * 24 * days)).Format(shortForm)
+    fromDate = time.Now().Add(-(time.Hour * 24 * time.Duration(days))).Format(shortForm)
     toDate = time.Now().Format(shortForm)
 
 
