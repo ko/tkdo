@@ -7,7 +7,7 @@ import (
     "strings"
     "bufio"
     "time"
-    "strconv"
+    "flag"
 )
 
 func scanLines(path string) ([]string, error) {
@@ -147,7 +147,20 @@ func usage() {
     os.Exit(1)
 }
 
+
+var days int
+
+func init() {
+    const (
+            defaultDays = 7
+    )
+    flag.IntVar(&days, "days", defaultDays, "days to look back from now")
+}
+
 func main() {
+
+    flag.Parse()
+
     const shortForm = "2006-01-02"
 
     filename := `../test/test1.md`
@@ -155,7 +168,6 @@ func main() {
     if len(os.Args) < 1 {
         usage()
     }
-    var days, _ = strconv.Atoi(os.Args[1])
 
     var header map[string]string
     var body map[string]string
