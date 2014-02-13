@@ -8,7 +8,7 @@ import (
     "bufio"
     "time"
     "flag"
-    "io/ioutil"
+    "path/filepath"
 )
 
 
@@ -16,6 +16,7 @@ import (
 var gDays int
 var gMode string
 var gDir string
+var gFileList []string
 
 const (
     titleMode = "title"
@@ -194,18 +195,34 @@ func fileToTask(filename string) (t Task) {
 }
 
 
-func getFileList(dir string) []string {
+func visit(path string, f os.FileInfo, err error) error {
 
-    var filelist []string
-    files, _ := ioutil.ReadDir(dir)
-    fmt.Println(files)
-    for _, f := range files {
-        fmt.Println(f)
-        fmt.Println(f.Name())
+    var bName = []byte(f.Name())
+
+    if f.IsDir() && bName[0] == '.' {
+        if len(f.Name()) == 1 || bName[1] == '.' {
+            // whatever about "." and ".."
+            return nil
+        }
+        return filepath.SkipDir
     }
 
-    return filelist
+    // boo directories
+    if f.IsDir() {
+        goto Leave
+    }
+
+    if strings.HasSuffix(path, ".md") == true {
+        gFileList = append(gFileList, path)
+    }
+
+Leave:
+    return nil
 }
+
+
+
+
 
 func init() {
     const (
@@ -234,9 +251,16 @@ func main() {
 
 
 
+    err := filepath.Walk(gDir, visit)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Printf("%s\n",gFileList)
+
 
     // TODO need to loop over multiple files
-    var files = getFileList(gDir)
+    var files = gFileList
     for file := range files {
         var task Task
         task = fileToTask(files[file])
