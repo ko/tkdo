@@ -20,6 +20,7 @@ var gFileList []string
 
 const (
     titleMode = "title"
+    dailyMode = "daily"
 )
 
 
@@ -29,10 +30,19 @@ type Task struct {
     updates map[string]string
 }
 
+var gResultTasks []Task
+
 func (t Task) GetTaskName() string {
     return t.title
 }
 
+func (t Task) GetCategory() string {
+    return t.category
+}
+
+func (t Task) GetUpdates() map[string]string {
+    return t.updates
+}
 
 
 
@@ -125,6 +135,7 @@ func parseFile(path string) (header map[string]string, body map[string]string) {
 
         if len(line) > 0 {
             if line[0] == '#' {
+                // TODO check if date format? 
                 date = parseDate(i, line)
                 parsingEntry = true
                 continue
@@ -189,10 +200,23 @@ func fileToTask(filename string) (t Task) {
     t.category = header[category]
     t.updates = body
 
-    fmt.Println("taskname=", t)
+//    fmt.Println("taskname=", t.GetTaskName())
 
     return t
 }
+
+
+func appendIfMissing(tasks []Task, task Task) []Task {
+    for _, v := range tasks {
+        // TODO we can do better than this
+        if v.GetTaskName() == task.GetTaskName() {
+            return tasks
+        }
+    }
+    return append(tasks, task)
+}
+
+
 
 
 func visit(path string, f os.FileInfo, err error) error {
@@ -256,35 +280,50 @@ func main() {
         log.Fatal(err)
     }
 
-    fmt.Printf("%s\n",gFileList)
 
 
-    // TODO need to loop over multiple files
     var files = gFileList
     for file := range files {
         var task Task
         task = fileToTask(files[file])
 
-        if gMode == titleMode {
+        // collect relevant tasks
+        for k, _ := range task.updates {
+            if dateToTime(k).Before(endTime) && dateToTime(k).After(startTime) {
+                gResultTasks = appendIfMissing(gResultTasks, task)
+            }
+        }
+    }
 
-            var result []string
+    if gMode == titleMode {
+        fmt.Println("=== titles ===")
+        for t := range gResultTasks {
+            fmt.Printf("%s|%s\n",
+                        gResultTasks[t].GetCategory(),
+                        gResultTasks[t].GetTaskName())
+        }
 
-            for k, _ := range task.updates {
-                if dateToTime(k).Before(endTime) == true {
-                    if dateToTime(k).After(startTime) == true {
-                        result = append(result, task.GetTaskName())
+    } else if gMode == dailyMode {
+        fmt.Println("=== daily ===")
+        // let's go day by day
+        for day := startTime; day.Before(endTime); day = day.Add(time.Hour * 24) {
+            //fmt.Printf("--- %s ---\n", day.Format(shortForm))
+            // and task by task
+            for t:= range gResultTasks {
+                // for every day a task has been updated
+                for date, _ := range gResultTasks[t].GetUpdates() {
+                    dateTime := dateToTime(date)
+                    // find a match
+                    if day.Format(shortForm) == dateTime.Format(shortForm) {
+                        fmt.Printf("%s|%s|%s\n",
+                                    date,
+                                    gResultTasks[t].GetCategory(),
+                                    gResultTasks[t].GetTaskName());
                     }
                 }
             }
-
-            fmt.Println(result)
         }
-
-
     }
-
-
-
 
 
 
