@@ -290,6 +290,7 @@ func main() {
         // collect relevant tasks
         for k, _ := range task.updates {
             // BUG this ain't right...
+            startTime.Add(-1 * time.Hour * 24)
             if dateToTime(k).Before(endTime) && dateToTime(k).After(startTime) {
                 gResultTasks = appendIfMissing(gResultTasks, task)
             }
