@@ -1,0 +1,30 @@
+---
+title: "my title"
+category: "drafts"
+attribute: "yaml anything"
+version: "1"
+---
+
+This will not be captured by the reader. 
+Text here will be unaccounted for because 
+there is no date header to give this 
+context. 
+
+# 2014-03-31
+
+The format is Year-Month-Day after a single '#' as if it
+were the markdown equivalent of an "h1." tag. 
+
+The words here will be associated with the above date,
+2014-03-31.
+
+For this version, the only significant or reserved
+words are:
+
+1. "^---" followed by "^---" on another line
+2. "^# dddd-dd-dd" and text associated with that day
+
+# 2014-04-01
+
+This is a new day. The yamlreader will parse this to be
+active for a second day, now.
