@@ -21,6 +21,7 @@ var gFileList []string
 const (
     titleMode = "title"
     dailyMode = "daily"
+    activitylogMode = "activitylog"
 )
 
 
@@ -274,13 +275,11 @@ func main() {
     endTime = time.Now()
 
 
-
+    // foreach file in gDir; do visit $file
     err := filepath.Walk(gDir, visit)
     if err != nil {
         log.Fatal(err)
     }
-
-
 
     var files = gFileList
     for file := range files {
@@ -309,7 +308,6 @@ func main() {
         fmt.Println("=== daily ===")
         // let's go day by day
         for day := startTime; day.Before(endTime); day = day.Add(time.Hour * 24) {
-            //fmt.Printf("--- %s ---\n", day.Format(shortForm))
             // and task by task
             for t:= range gResultTasks {
                 // for every day a task has been updated
@@ -325,11 +323,19 @@ func main() {
                 }
             }
         }
+    } else if gMode == activitylogMode {
+        fmt.Println("=== activitylog ===")
+        // for this task
+         
+        // for every day this task has been updated
+        for date, _ := range gResultTasks[t].GetUpdates() {
+            // print it out
+            fmt.Printf("%s|%s|%s\n",
+                        date,
+                        gResultTask[t].GetCategory(),
+                        gResultTasks[t].GetTaskName())
+        }
     }
-
-
-
-
 
     /*
     var fromDate string
