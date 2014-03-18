@@ -203,7 +203,17 @@ func getFirstSentence(msg string) (sentence string) {
 
 func getFirstSentences(body string) (sentences []string) {
 
+    sentences = append(sentences, getFirstSentence(body))
     return sentences
+}
+
+func getLatestSummary(body string) (summary string) {
+
+    var sentences []string
+    sentences = getFirstSentences(body)
+    summary = sentences[len(sentences)-1]
+
+    return summary
 }
 
 func dateToTime(date string) (parsed time.Time) {
@@ -370,7 +380,7 @@ func main() {
             if gSummary == true {
                 task = gResultTasks[t]
                 for _ , msg := range task.GetUpdates() {
-                    fmt.Printf("%s\n", getFirstSentence(msg))
+                    fmt.Printf("%s\n", getLatestSummary(msg))
                 }
             }
 
