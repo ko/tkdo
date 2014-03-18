@@ -17,15 +17,17 @@ var gDays int
 var gMode string
 var gDir string
 var gFileList []string
+var gFilename string
 
 const (
     titleMode = "title"
     dailyMode = "daily"
-    activitylogMode = "activitylog"
+    activitydaysMode = "activitydays"
 )
 
 
 type Task struct {
+    filename string
     title string
     category string
     updates map[string]string
@@ -39,6 +41,10 @@ func (t Task) GetTaskName() string {
 
 func (t Task) GetCategory() string {
     return t.category
+}
+
+func (t Task) GetFilename() string {
+    return t.filename
 }
 
 func (t Task) GetUpdates() map[string]string {
@@ -199,6 +205,8 @@ func fileToTask(filename string) (t Task) {
 
     t.title = header[title]
     t.category = header[category]
+    // TODO basename?
+    t.filename = filename
     t.updates = body
 
 //    fmt.Println("taskname=", t.GetTaskName())
@@ -254,10 +262,12 @@ func init() {
             defaultDays = 7
             defaultMode = titleMode
             defaultDir = "."
+            defaultFilename = ""
     )
     flag.IntVar(&gDays, "days", defaultDays, "days to look back from now")
     flag.StringVar(&gMode, "mode", defaultMode, "mode to run in")
     flag.StringVar(&gDir, "dir", defaultDir, "directory with tasks")
+    flag.StringVar(&gFilename, "file", defaultFilename, "specific file to inspect")
 }
 
 func main() {
@@ -323,17 +333,24 @@ func main() {
                 }
             }
         }
-    } else if gMode == activitylogMode {
-        fmt.Println("=== activitylog ===")
-        // for this task
-         
-        // for every day this task has been updated
-        for date, _ := range gResultTasks[t].GetUpdates() {
-            // print it out
-            fmt.Printf("%s|%s|%s\n",
-                        date,
-                        gResultTask[t].GetCategory(),
-                        gResultTasks[t].GetTaskName())
+    } else if gMode == activitydaysMode {
+        fmt.Println("=== activitydays ===")
+        // for each task
+        for t:= range gResultTasks {
+
+            // for this task
+            if gResultTasks[t].GetFilename() == gFilename {
+
+                // for every day this task has been updated
+                for date, _ := range gResultTasks[t].GetUpdates() {
+
+                    // print it out
+                    fmt.Printf("%s|%s|%s\n",
+                                date,
+                                gResultTasks[t].GetCategory(),
+                                gResultTasks[t].GetTaskName())
+                }
+            }
         }
     }
 
