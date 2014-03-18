@@ -18,6 +18,7 @@ var gMode string
 var gDir string
 var gFileList []string
 var gFilename string
+var gSummary bool
 
 const (
     titleMode = "title"
@@ -156,6 +157,55 @@ func parseFile(path string) (header map[string]string, body map[string]string) {
     return mapHdr, mapBody
 }
 
+func getFirstSentence(msg string) (sentence string) {
+    var retstr string
+    var lines []string
+    var idx_ellipsis int
+    var idx_dot int
+
+    idx_dot = -1
+    lines = strings.Split(msg, "\n")
+
+    for  _, line := range lines {
+        if strings.Contains(line, "...") {
+            idx_ellipsis = strings.Index(line, "... ")
+            if idx_ellipsis == -1 {
+                idx_ellipsis = strings.Index(line, "...\n")
+            }
+        }
+        if strings.Contains(line, ".") {
+           idx_dot = strings.Index(line, ". ")
+           if idx_dot == -1 {
+               idx_dot = strings.Index(line, ".")
+               if idx_dot != len(line) - 1 {
+                  idx_dot = -1
+               }
+           }
+        }
+
+        if strings.Index(line, "* ") == 0 {
+            retstr += "\n"
+        }
+
+        if len(line) == 0 {
+            retstr += "\n"
+        } else {
+            retstr += " "
+            retstr += line
+        }
+        if idx_dot != -1 {
+            break
+        }
+    }
+
+    return retstr
+}
+
+func getFirstSentences(body string) (sentences []string) {
+
+    return sentences
+}
+
 func dateToTime(date string) (parsed time.Time) {
     const shortForm = "2006-01-02"
 
@@ -263,11 +313,13 @@ func init() {
             defaultMode = titleMode
             defaultDir = "."
             defaultFilename = ""
+            defaultSummary = false
     )
     flag.IntVar(&gDays, "days", defaultDays, "days to look back from now")
     flag.StringVar(&gMode, "mode", defaultMode, "mode to run in")
     flag.StringVar(&gDir, "dir", defaultDir, "directory with tasks")
     flag.StringVar(&gFilename, "file", defaultFilename, "specific file to inspect")
+    flag.BoolVar(&gSummary, "summary", defaultSummary, "summary of task(s)")
 }
 
 func main() {
@@ -307,11 +359,21 @@ func main() {
     }
 
     if gMode == titleMode {
+        var task Task
         fmt.Println("=== titles ===")
         for t := range gResultTasks {
             fmt.Printf("%s|%s\n",
                         gResultTasks[t].GetCategory(),
                         gResultTasks[t].GetTaskName())
+
+            // if we want a summary of this task...
+            if gSummary == true {
+                task = gResultTasks[t]
+                for _ , msg := range task.GetUpdates() {
+                    fmt.Printf("%s\n", getFirstSentence(msg))
+                }
+            }
+
         }
 
     } else if gMode == dailyMode {
