@@ -191,29 +191,50 @@ func getFirstSentence(msg string) (sentence string) {
             retstr += "\n"
         } else {
             retstr += " "
-            retstr += line
-        }
-        if idx_dot != -1 {
-            break
+            if idx_dot != -1 {
+                // cut at the first "." we see... and add a "."
+                // at the end of this. 
+                retstr += strings.Split(line,". ")[0]
+                retstr += "."
+                break
+            } else {
+                retstr += line
+            }
         }
     }
 
+    //fmt.Println("returning=", retstr)
     return retstr
 }
 
-func getFirstSentences(body string) (sentences []string) {
+func getUpdateSummary(body string) (summary string) {
 
-    sentences = append(sentences, getFirstSentence(body))
-    return sentences
-}
-
-func getLatestSummary(body string) (summary string) {
-
+    var paragraph []string
+    var paragraphs []string
     var sentences []string
-    sentences = getFirstSentences(body)
-    summary = sentences[len(sentences)-1]
+    var lines []string
 
-    return summary
+    // paragraphs have empty strings/lines between them
+    lines = strings.Split(body,"\n")
+    for _, line := range lines {
+        if len(line) > 0 {
+            paragraph = append(paragraph, line)
+        } else {
+            // delimit with "\n" so the following "range" call will do 
+            // something useful
+            paragraphs = append(paragraphs, strings.Join(paragraph,"\n"))
+            paragraph = nil
+        }
+    }
+
+    for _, para := range paragraphs {
+        // We would have empty strings show up here, otherwise. 
+        if len(para) > 0 {
+            sentences = append(sentences , getFirstSentence(para))
+        }
+    }
+
+    return strings.Join(sentences, "\n\n")
 }
 
 func dateToTime(date string) (parsed time.Time) {
@@ -378,9 +399,19 @@ func main() {
 
             // if we want a summary of this task...
             if gSummary == true {
+                var idx int
+                var counter int
                 task = gResultTasks[t]
-                for _ , msg := range task.GetUpdates() {
-                    fmt.Printf("%s\n", getLatestSummary(msg))
+                idx = len(task.GetUpdates()) - 1
+                counter = 0
+                for _, msg := range task.updates {
+                    if counter == idx {
+                        fmt.Println()
+                        fmt.Printf("%s\n", getUpdateSummary(msg))
+                        fmt.Println()
+                        break
+                    }
+                    counter++
                 }
             }
 
