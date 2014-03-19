@@ -393,12 +393,19 @@ func main() {
         var task Task
         fmt.Println("=== titles ===")
         for t := range gResultTasks {
+
+            if gSummary == true {
+                fmt.Println("---")
+            }
+
             fmt.Printf("%s|%s\n",
                         gResultTasks[t].GetCategory(),
                         gResultTasks[t].GetTaskName())
 
             // if we want a summary of this task...
             if gSummary == true {
+                fmt.Println("---")
+
                 var idx int
                 var counter int
                 task = gResultTasks[t]
