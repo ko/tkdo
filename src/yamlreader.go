@@ -175,6 +175,15 @@ func getFirstSentence(msg string) (sentence string) {
 				}
 			}
 		}
+        if strings.Contains(line, "?") {
+            idx_qmark = strings.Index(line, "? ")
+            if idx_qmark == -1 {
+                idx_qmark = strings.Index(line, "?")
+                if idx_qmark != len(line)-1 {
+                    idx_qmark = -1
+                }
+            }
+        }
 
 		if strings.Index(line, "* ") == 0 {
 			retstr += "\n"
@@ -190,9 +199,13 @@ func getFirstSentence(msg string) (sentence string) {
 				retstr += strings.Split(line, ". ")[0]
 				retstr += "."
 				break
-			} else {
-				retstr += line
-			}
+			} 
+            if idx_qmark != -1 {
+                retstr += strings.Split(line "? ")[0]
+                retstr += "?"
+                break
+            }
+            retstr += line
 		}
 	}
 
