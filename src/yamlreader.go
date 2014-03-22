@@ -155,6 +155,7 @@ func getFirstSentence(msg string) (sentence string) {
 	var lines []string
 	var idx_ellipsis int
 	var idx_dot int
+    var idx_qmark int
 
 	idx_dot = -1
 	lines = strings.Split(msg, "\n")
@@ -201,7 +202,7 @@ func getFirstSentence(msg string) (sentence string) {
 				break
 			} 
             if idx_qmark != -1 {
-                retstr += strings.Split(line "? ")[0]
+                retstr += strings.Split(line, "? ")[0]
                 retstr += "?"
                 break
             }
@@ -215,10 +216,11 @@ func getFirstSentence(msg string) (sentence string) {
 
 func getUpdateSummary(body string) (summary string) {
 
+	var lines []string
 	var paragraph []string
 	var paragraphs []string
-	var sentences []string
-	var lines []string
+	//var sentences []string
+    var sentence string
 
 	// paragraphs have empty strings/lines between them
 	lines = strings.Split(body, "\n")
@@ -236,11 +238,15 @@ func getUpdateSummary(body string) (summary string) {
 	for _, para := range paragraphs {
 		// We would have empty strings show up here, otherwise.
 		if len(para) > 0 {
-			sentences = append(sentences, getFirstSentence(para))
+            // TODO do something with this
+			//sentences = append(sentences, getFirstSentence(para))
+            sentence = getFirstSentence(para)
 		}
 	}
 
-	return strings.Join(sentences, "\n\n")
+    // TODO do something with this
+	//return strings.Join(sentences, "\n\n")
+    return sentence
 }
 
 func dateToTime(date string) (parsed time.Time) {
@@ -408,7 +414,9 @@ func main() {
 				for _, msg := range task.updates {
 					if counter == idx {
 						fmt.Println()
-						fmt.Printf("%s\n", getUpdateSummary(msg))
+                        var latestUpdate string
+                        latestUpdate = getUpdateSummary(msg)
+						fmt.Printf("%s\n", latestUpdate)
 						fmt.Println()
 						break
 					}
