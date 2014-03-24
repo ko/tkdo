@@ -153,20 +153,14 @@ func parseFile(path string) (header map[string]string, body map[string]string) {
 func getFirstSentence(msg string) (sentence string) {
 	var retstr string
 	var lines []string
-	var idx_ellipsis int
 	var idx_dot int
     var idx_qmark int
 
 	idx_dot = -1
+    idx_qmark = -1
 	lines = strings.Split(msg, "\n")
 
 	for _, line := range lines {
-		if strings.Contains(line, "...") {
-			idx_ellipsis = strings.Index(line, "... ")
-			if idx_ellipsis == -1 {
-				idx_ellipsis = strings.Index(line, "...\n")
-			}
-		}
 		if strings.Contains(line, ".") {
 			idx_dot = strings.Index(line, ". ")
 			if idx_dot == -1 {
@@ -175,6 +169,18 @@ func getFirstSentence(msg string) (sentence string) {
 					idx_dot = -1
 				}
 			}
+
+            var idx_ellipsis int
+            idx_ellipsis = strings.Index(line, "... ")
+            if strings.Contains(line, "...") {
+                if idx_ellipsis == -1 {
+                    idx_ellipsis = strings.Index(line, "...\n")
+                }
+
+                if idx_dot != (idx_ellipsis - 2) {
+                    idx_dot = -1
+                }
+            }
 		}
         if strings.Contains(line, "?") {
             idx_qmark = strings.Index(line, "? ")
@@ -193,14 +199,32 @@ func getFirstSentence(msg string) (sentence string) {
 		if len(line) == 0 {
 			retstr += "\n"
 		} else {
-			retstr += " "
+            // multiple functions for this
+            //
+            // 1. if we have a full stop with no second sentence
+            // to follow it, now it will follow the same pattern.
+            // Thus,
+            //      ... this is the world.
+            // and
+            //      ... this is the world. So you can see.
+            // will both match at ". " after "world".
+            //
+            // 2. simply... to add whitespace between lines as 
+            // they are appended to retstr below.
+			line += " "
+
 			if idx_dot != -1 {
-				// cut at the first "." we see... and add a "."
-				// at the end of this.
-				retstr += strings.Split(line, ". ")[0]
-				retstr += "."
-				break
-			} 
+                // cut at the first "." we see... and add a "."
+                // at the end of this.
+                //
+                // Look for ". " because we put a space 
+                // after the ending period of a sentence.
+                // Otherwise we might match on ".bashrc" 
+                // instead of ".bashrc is bad. So we..."
+                retstr += strings.Split(line, ". ")[0]
+                retstr += "."
+                break
+			}
             if idx_qmark != -1 {
                 retstr += strings.Split(line, "? ")[0]
                 retstr += "?"
