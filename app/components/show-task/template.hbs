@@ -6,7 +6,7 @@
         {{task.description}}
     </td>
     <td>
-        <em>{{task.createdDate}}</em>
+        <em>{{date-days-ago task.createdDate}}</em>
     </td>
     <td>
         <button {{action "deleteTask" task}} class="btn btn-submit">Done</button>
