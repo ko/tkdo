@@ -1,6 +1,14 @@
-<article>
-    <h2>{{task.title}}</h2>
-    <p>{{task.description}}</p>
-    <em>{{task.createdDate}}</em>
-    <button {{action "deleteTask" task}} class="btn btn-submit">Done</button>
-</article>
+<tr>
+    <td>
+        {{task.title}}
+    </td> 
+    <td>
+        {{task.description}}
+    </td>
+    <td>
+        <em>{{task.createdDate}}</em>
+    </td>
+    <td>
+        <button {{action "deleteTask" task}} class="btn btn-submit">Done</button>
+    </td>
+</tr>

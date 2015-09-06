@@ -12,11 +12,10 @@ export default Ember.Route.extend({
     actions: {
         createTask(info) {
 
-            console.log("kenko:createTask:1");
             let newTask = this.store.createRecord('task', {
                 title: info.title,
                 description: info.description,
-                createdData: new Date(),
+                createdDate: new Date(),
             });
 
             newTask.save();
