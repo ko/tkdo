@@ -12,6 +12,7 @@ export default Ember.Route.extend({
     actions: {
         createTask(info) {
 
+            console.log("kenko:createTask:1");
             let newTask = this.store.createRecord('task', {
                 title: info.title,
                 description: info.description,
@@ -19,6 +20,12 @@ export default Ember.Route.extend({
             });
 
             newTask.save();
+        },
+
+        deleteTask(info) {
+            let task = this.store.find('task', info.id).then(function (task) {
+                task.destroyRecord();  
+            });;
         }
     }
 });
