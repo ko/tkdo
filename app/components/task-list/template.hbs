@@ -1,0 +1,5 @@
+<table class="TaskTable">
+    {{#each tasks as |task|}}
+        {{show-task task=task deleteTask="deleteTask"}}
+    {{/each}}
+</table>

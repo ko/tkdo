@@ -1,6 +1,6 @@
 <main class="HolyGrail-content">
     {{create-new-task task=model.task createTask="createTask"}}
-    {{show-task-table tasks=model.data}}
+    {{task-list tasks=model.data deleteTask="deleteTask"}}
 </main>
 <nav class="HolyGrail-nav">
 </nav>
