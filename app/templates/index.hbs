@@ -1,8 +1,8 @@
-<div class="container">
+<main class="HolyGrail-content">
     {{create-new-task task=model.task createTask="createTask"}}
-    <table class="taskTable">
-        {{#each model.data as |task|}}
-            {{show-task task=task deleteTask="deleteTask"}}
-        {{/each}}
-    </table>
-</div>
+    {{show-task-table tasks=model.data}}
+</main>
+<nav class="HolyGrail-nav">
+</nav>
+<aside class="HolyGrail-ads">
+</aside>
