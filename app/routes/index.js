@@ -15,16 +15,27 @@ export default Ember.Route.extend({
             let newTask = this.store.createRecord('task', {
                 title: info.title,
                 description: info.description,
-                createdDate: new Date(),
+                dateCreated: new Date(),
+                dateCompleted: null,
+                author: "FIXME",
             });
 
             newTask.save();
         },
 
-        deleteTask(info) {
+        completeTask(info) {
             this.store.find('task', info.id).then(function (task) {
-                task.destroyRecord();  
+                Ember.set(task, "dateCompleted", new Date());
+
+                // Don't delete; just don't display..
+                // the show-task-list will check for non-null 
+                // value in task.dateCompleted
+                //
+                //   NO: task.destroyRecord();  
+                //
+                task.save();
             });
+
         }
     }
 });

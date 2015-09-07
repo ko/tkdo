@@ -8,8 +8,8 @@ export default Ember.Component.extend({
             this.set('task', {});
         },
 
-        deleteTask: function(task) {
-            this.sendAction('deleteTask', task);
+        completeTask: function(task) {
+            this.sendAction('completeTask', task);
             this.set('task', {});
         }
     }

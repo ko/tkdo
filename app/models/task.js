@@ -7,6 +7,8 @@ let {
 
 export default Model.extend({
   title: attr('string'),
-  createdDate: attr('date'),
+  author: attr('string'),
+  dateCreated: attr('date'),
+  dateCompleted: attr('date'),
   description: attr('string')
 });

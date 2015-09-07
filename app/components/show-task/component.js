@@ -2,8 +2,8 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
     actions: {
-        deleteTask: function(task) {
-            this.sendAction('deleteTask', task);
+        completeTask: function(task) {
+            this.sendAction('completeTask', task);
             this.set('task', {});
         }
     }
