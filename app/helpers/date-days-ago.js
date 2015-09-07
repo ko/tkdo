@@ -6,8 +6,10 @@ export function dateDaysAgo(params/*, hash*/) {
     let dateAgoMs = Math.abs(today - date);
     let dateAgoDays = Math.round(dateAgoMs / 3600 / 24 / 1000);
 
-    if (dateAgoDays == 0) {
+    if (dateAgoDays === 0) {
         return "Today";
+    } else if (dateAgoDays === 1) {
+        return "1 day ago";
     } else {
         return dateAgoDays + " days ago";
     }
