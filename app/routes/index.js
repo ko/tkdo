@@ -6,7 +6,7 @@ export default Ember.Route.extend({
         return {
             data: this.store.findAll('task'),
             task: {}
-        }
+        };
     },
 
     actions: {
@@ -22,9 +22,9 @@ export default Ember.Route.extend({
         },
 
         deleteTask(info) {
-            let task = this.store.find('task', info.id).then(function (task) {
+            this.store.find('task', info.id).then(function (task) {
                 task.destroyRecord();  
-            });;
+            });
         }
     }
 });

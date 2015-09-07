@@ -1,14 +1,20 @@
 <h2>Task Create</h2>
 
 <form id="NewTask">
-    <p>
-        {{input value=task.title placeholder="Title"}}
-    </p>
-    <p>
-        {{input value=task.description placeholder="Description (optional)"}}
-    </p>
-    <p>
-        <button {{action "createTask" task}}>Create</button>
-    </p>
+    <table class="taskTable">
+        <tr>
+            <td>
+                {{input value=task.title placeholder="Title"}}
+            </td>
+            <td>
+                {{input value=task.description placeholder="Description (optional)"}}
+            </td>
+            <td>
+            </td>
+            <td>
+                <button {{action "createTask" task}}>Create</button>
+            </td>
+        </tr>
+    </table>
 </form>
 

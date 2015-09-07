@@ -1,6 +1,6 @@
 <div class="container">
     {{create-new-task task=model.task createTask="createTask"}}
-    <table>
+    <table class="taskTable">
         {{#each model.data as |task|}}
             {{show-task task=task deleteTask="deleteTask"}}
         {{/each}}
