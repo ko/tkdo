@@ -1,0 +1,14 @@
+.TaskTable {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.TaskTable tr td {
+    width: 200px; 
+    text-align: center;
+ 
+}
+
+input {
+    width: 170px;
+}
