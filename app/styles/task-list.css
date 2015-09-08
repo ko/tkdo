@@ -19,5 +19,11 @@ input {
     border: none;
     cursor: pointer;
     padding: 2px 12px 2px 12px;
+}
+
+.divToggleList {
     text-decoration: none;
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
 }

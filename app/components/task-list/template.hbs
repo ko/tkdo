@@ -1,10 +1,16 @@
-{{#if isShowingCompleted}}
-    <span {{action "toggleShowingCompleted" false}} class="btnToggleList">In Progress</span>
-{{else}}
-    <span {{action "toggleShowingCompleted" true}} class="btnToggleList">Completed</span>
-{{/if}}
-<br>
-<br>
 {{create-new-task task=model.task createTask="createTask"}}
 <br>
+<br>
+<div class="divToggleList">
+    I WANT to see 
+    {{#if isShowingCompleted}}
+        <span {{action "toggleShowingCompleted" false}} class="btnToggleList">In Progress</span>
+    {{else}}
+        <span {{action "toggleShowingCompleted" true}} class="btnToggleList">Completed</span>
+    {{/if}}
+    tasks.
+</div>
+<br>
+<br>
+
 {{show-task-list showCompleted=isShowingCompleted tasks=model.data completeTask="completeTask"}}
