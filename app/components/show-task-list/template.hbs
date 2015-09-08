@@ -1,7 +1,5 @@
 <table class="TaskTable">
     {{#each tasks as |task|}}
-        {{#unless task.dateCompleted}}
-            {{show-task task=task completeTask="completeTask"}}
-        {{/unless}}
+        {{show-task showCompleted=showCompleted task=task completeTask="completeTask"}}
     {{/each}}
 </table>

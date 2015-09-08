@@ -35,7 +35,6 @@ export default Ember.Route.extend({
                 //
                 task.save();
             });
-
-        }
+        },
     }
 });

@@ -1,6 +1,9 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+
+    isShowingCompleted: false,
+
     actions: {
 
         createTask: function(task) {
@@ -11,6 +14,10 @@ export default Ember.Component.extend({
         completeTask: function(task) {
             this.sendAction('completeTask', task);
             this.set('task', {});
+        }, 
+
+        toggleShowingCompleted: function(bool) {
+            this.set('isShowingCompleted', bool);
         }
     }
 });

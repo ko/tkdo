@@ -1,3 +1,7 @@
+<button {{action "toggleShowingCompleted" true}} class="btn btn-submit">Completed</button>
+<button {{action "toggleShowingCompleted" false}} class="btn btn-submit">In Progress</button>
+<br>
+<br>
 {{create-new-task task=model.task createTask="createTask"}}
 <br>
-{{show-task-list tasks=model.data completeTask="completeTask"}}
+{{show-task-list showCompleted=isShowingCompleted tasks=model.data completeTask="completeTask"}}
