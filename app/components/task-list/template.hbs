@@ -1,5 +1,8 @@
-<button {{action "toggleShowingCompleted" true}} class="btn btn-submit">Completed</button>
-<button {{action "toggleShowingCompleted" false}} class="btn btn-submit">In Progress</button>
+{{#if isShowingCompleted}}
+    <span {{action "toggleShowingCompleted" false}} class="btnToggleList">In Progress</span>
+{{else}}
+    <span {{action "toggleShowingCompleted" true}} class="btnToggleList">Completed</span>
+{{/if}}
 <br>
 <br>
 {{create-new-task task=model.task createTask="createTask"}}

@@ -12,3 +12,12 @@
 input {
     width: 170px;
 }
+
+.btnToggleList {
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 2px 12px 2px 12px;
+    text-decoration: none;
+}
