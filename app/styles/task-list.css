@@ -11,6 +11,19 @@
 
 input {
     width: 170px;
+    height: 50px;
+}
+
+.DivTaskTableEntry {
+    height: 50px;
+    font-size: 3em;
+    line-height: 90%;
+}
+
+.DivTaskTableEntryDate {
+    height: 50px;
+    font-size: 1em;
+    line-height: 20%;
 }
 
 .btnToggleList {

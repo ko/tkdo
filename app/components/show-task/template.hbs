@@ -2,32 +2,48 @@
     {{#if showCompleted}}
         {{#if task.dateCompleted}}
             <td>
-                {{task.title}}
+                <div class="DivTaskTableEntry">
+                    {{task.title}}
+                </div>
             </td> 
             <td>
-                {{task.description}}
+                <div class="DivTaskTableEntry">
+                    {{task.description}}
+                </div>
             </td>
             <td>
-                <em>{{date-days-ago task.dateCompleted}}</em>
+                <div class="DivTaskTableEntryDate">
+                    <em>{{date-days-ago task.dateCompleted}}</em>
+                </div>
             </td>
             <td>
-                &nbsp;
+                <div class="DivTaskTableEntry">
+                    &nbsp;
+                </div>
             </td>
 
         {{/if}}
     {{else}}
         {{#unless task.dateCompleted}}
             <td>
-                {{task.title}}
+                <div class="DivTaskTableEntry">
+                    {{task.title}}
+                </div>
             </td> 
             <td>
-                {{task.description}}
+                <div class="DivTaskTableEntry">
+                    {{task.description}}
+                </div>
             </td>
             <td>
-                <em>{{date-days-ago task.dateCreated}}</em>
+                <div class="DivTaskTableEntryDate">
+                    <em>{{date-days-ago task.dateCreated}}</em>
+                </div>
             </td>
             <td>
-                <button {{action "completeTask" task}} class="btn btn-submit">Done</button>
+                <div class="DivTaskTableEntry">
+                    <button {{action "completeTask" task}} class="btn btn-submit">Done</button>
+                </div>
             </td>
         {{/unless}}
     {{/if}}
